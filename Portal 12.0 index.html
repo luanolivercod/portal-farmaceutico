@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Ferramentas Farmacêuticas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .app-container {
+            width: 100%;
+            height: calc(100vh - 80px);
+            border: none;
+        }
+        .main-header {
+            background-color: #066b30;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            height: 80px;
+        }
+        .main-header img {
+            height: 64px;
+            width: auto;
+        }
+        .menu-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 1rem;
+            gap: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .menu-buttons button {
+            background-color: #38a169;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: none;
+        }
+        .menu-buttons button:hover {
+            background-color: #2f855a;
+        }
+        .menu-buttons button.active {
+            background-color: #066b30;
+        }
+        .menu-buttons button.visible {
+            display: block;
+        }
+        #login-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: auto;
+            gap: 1rem;
+        }
+        #portal-content, #app-iframe-wrapper {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen">
+
+    <header class="main-header">
+        <img src="LOGO-IDEAS-TRANSPARENTE.png" alt="Logo da Empresa">
+        <h1 class="text-3xl font-bold">Portal de Ferramentas Farmacêuticas</h1>
+    </header>
+    
+    <main class="flex-grow p-4 flex flex-col items-center justify-center">
+        <div id="login-form-container" class="w-full">
+            <form id="login-form">
+                <h2 class="text-2xl font-semibold text-gray-700">Acesso Restrito</h2>
+                <input type="text" id="username" placeholder="Usuário" class="p-2 border rounded-md w-full" required>
+                <input type="password" id="password" placeholder="Senha" class="p-2 border rounded-md w-full" required>
+                <button type="submit" class="bg-green-500 text-white p-2 rounded-md w-full">Entrar</button>
+                <p id="error-message" class="text-red-500 hidden"></p>
+            </form>
+        </div>
+
+        <div id="portal-content" class="hidden w-full h-full flex flex-col">
+            <nav class="menu-buttons">
+                <button id="btn-diluicao" onclick="loadApp('diluicao_29.0_index.html.html', this)">Calculadora de Diluição</button>
+                <button id="btn-custo" onclick="loadApp('custo por paciente 10.0 index.html', this)">Custo por Paciente</button>
+                <button id="btn-rastreabilidade" onclick="loadApp('Rastreabilidade teste web 26.0 index.html', this)">Rastreabilidade</button>
+                <button id="btn-suprimentos" onclick="loadApp('Suprimentos 9.0 index.html', this)">Análise de Estoque</button>
+                <button id="btn-emprestimo" onclick="loadApp('Termo de empréstimo 4.0 index.html', this)">Termo de Empréstimo</button>
+            </nav>
+            <iframe id="app-iframe" class="app-container w-full h-full rounded-lg shadow-lg bg-white p-4"></iframe>
+        </div>
+    </main>
+    
+    <script>
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrx3Q1a-zJwKD46JmhFyAS6oQFlKpteP5eso1XSbd3YZ3dVnYokEH4HuE4QyYthh5i/exec'; // <--- COLOQUE A URL AQUI
+
+        const loginForm = document.getElementById('login-form');
+        const loginFormContainer = document.getElementById('login-form-container');
+        const portalContent = document.getElementById('portal-content');
+        const errorMessage = document.getElementById('error-message');
+        const appIframe = document.getElementById('app-iframe');
+        const allButtons = document.querySelectorAll('.menu-buttons button');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro na comunicação com o servidor.');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    loginFormContainer.classList.add('hidden');
+                    portalContent.classList.remove('hidden');
+                    showButtonsForUser(result.permissions);
+                } else {
+                    errorMessage.textContent = result.message || "Usuário ou senha incorretos.";
+                    errorMessage.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error('Erro de rede ou servidor:', error);
+                errorMessage.textContent = "Erro ao conectar. Veja os detalhes no console do navegador (F12)."; // Adiciona a instrução";
+                errorMessage.classList.remove('hidden');
+            }
+        });
+
+        function showButtonsForUser(userPermissions) {
+            allButtons.forEach(button => {
+                const buttonId = button.id.replace('btn-', '');
+                if (userPermissions.includes(buttonId)) {
+                    button.classList.add('visible');
+                } else {
+                    button.classList.remove('visible');
+                }
+            });
+
+            if (userPermissions.length > 0) {
+                const firstAllowedApp = userPermissions[0];
+                const firstButton = document.getElementById(`btn-${firstAllowedApp}`);
+                if (firstButton) {
+                    // Acessa o atributo onclick para pegar o nome do arquivo
+                    const appFileName = firstButton.getAttribute('onclick').match(/'(.*?)'/)[1];
+                    loadApp(appFileName, firstButton);
+                }
+            }
+        }
+
+        function loadApp(appFile, button) {
+            appIframe.src = appFile;
+            allButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+    </script>
+</body>
+</html>
