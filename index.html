@@ -3,97 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Farmacêutico IDEAS</title>
+    <title>Portal de Ferramentas Farmacêuticas</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8;
         }
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 0.5rem;
+        .app-container {
+            width: 100%;
+            height: calc(100vh - 80px); /* Ajusta a altura para caber na tela, subtraindo a altura do menu */
+            border: none;
         }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-        .menu-item {
+        /* Ajustando as cores e o layout do cabeçalho */
+        .main-header {
+            background-color: #066b30; /* Cor verde do logo */
+            color: white;
+            padding: 1rem;
+            text-align: center;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
+            gap: 1rem; /* Espaço entre o logo e o título */
+            height: 80px; /* Altura fixa para o cabeçalho */
+        }
+        .main-header img {
+            height: 64px; /* Tamanho do logo */
+            width: auto;
+        }
+        .menu-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
             padding: 1rem;
-            border-radius: 0.5rem;
-            background-color: #e2e8f0;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
+            gap: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .menu-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        .menu-item a {
-            text-decoration: none;
-            color: #334155;
+        /* Ajustando as cores dos botões para combinar com o novo tema */
+        .menu-buttons button {
+            background-color: #38a169; /* Um verde um pouco mais claro para os botões */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
             font-weight: 600;
+            transition: background-color 0.3s;
         }
-        .menu-item img {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 0.5rem;
+        .menu-buttons button:hover {
+            background-color: #2f855a;
+        }
+        .menu-buttons button.active {
+            background-color: #066b30; /* Cor do logo para o botão ativo */
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="flex flex-col h-screen">
 
-    <div id="main-menu" class="container">
-        <div class="flex flex-col items-center mb-6">
-            <img src="LOGO-IDEAS-TRANSPARENTE.png" alt="Logo IDEAS" class="mb-4 w-32">
-            <h1 class="text-3xl font-bold text-blue-900 mb-2">Bem-vindo(a) ao Portal Farmacêutico!</h1>
-            <p class="text-lg text-gray-600 text-center">Selecione uma ferramenta abaixo:</p>
-        </div>
-        <div class="menu-grid">
-            <div class="menu-item">
-                <a href="calculadora_diluicao%2019.0%20index.html">
-                    <img src="https://raw.githubusercontent.com/luanolivercod/portal-farmaceutico/main/diluicao.png" alt="Diluição">
-                    <span>Calculadora de Diluição</span>
-                </a>
-            </div>
-            <div class="menu-item">
-                <a href="custo%20por%20paciente%2010.0%20index.html">
-                    <img src="https://raw.githubusercontent.com/luanolivercod/portal-farmaceutico/main/custo.png" alt="Custo por Paciente">
-                    <span>Custo por Paciente</span>
-                </a>
-            </div>
-            <div class="menu-item">
-                <a href="Rastreabilidade%20teste%20web%2026.0%20index.html">
-                    <img src="https://raw.githubusercontent.com/luanolivercod/portal-farmaceutico/main/rastreabilidade.png" alt="Rastreabilidade">
-                    <span>Rastreabilidade de Medicamentos</span>
-                </a>
-            </div>
-            <div class="menu-item">
-                <a href="Suprimentos%209.0%20index.html">
-                    <img src="https://raw.githubusercontent.com/luanolivercod/portal-farmaceutico/main/suprimentos.png" alt="Análise de Suprimentos">
-                    <span>Análise de Estoque</span>
-                </a>
-            </div>
-            <div class="menu-item">
-                <a href="Termo%20de%20empréstimo%204.0%20index.html">
-                    <img src="https://raw.githubusercontent.com/luanolivercod/portal-farmaceutico/main/emprestimos.png" alt="Termo de Empréstimo">
-                    <span>Gerador de Empréstimos</span>
-                </a>
-            </div>
-        </div>
-    </div>
+    <header class="main-header">
+        <img src="LOGO-IDEAS-TRANSPARENTE.png" alt="Logo da Empresa">
+        <h1 class="text-3xl font-bold">Portal de Ferramentas Farmacêuticas</h1>
+    </header>
+
+    <nav class="menu-buttons">
+        <button id="btn-diluicao" onclick="loadApp('diluicao_29.0_index.html.html', this)">Calculadora de Diluição</button>
+        <button id="btn-custo" onclick="loadApp('custo por paciente 10.0 index.html', this)">Custo por Paciente</button>
+        <button id="btn-rastreabilidade" onclick="loadApp('Rastreabilidade teste web 26.0 index.html', this)">Rastreabilidade</button>
+        <button id="btn-suprimentos" onclick="loadApp('Suprimentos 9.0 index.html', this)">Análise de Estoque</button>
+        <button id="btn-emprestimo" onclick="loadApp('Termo de empréstimo 4.0 index.html', this)">Termo de Empréstimo</button>
+    </nav>
+
+    <main class="flex-grow p-4">
+        <iframe id="app-iframe" class="app-container w-full h-full rounded-lg shadow-lg bg-white p-4"></iframe>
+    </main>
+
+    <script>
+        // Função para carregar o aplicativo no iframe
+        function loadApp(appFile, button) {
+            const iframe = document.getElementById('app-iframe');
+            iframe.src = appFile;
+
+            // Remove a classe 'active' de todos os botões
+            const buttons = document.querySelectorAll('.menu-buttons button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Adiciona a classe 'active' ao botão clicado
+            button.classList.add('active');
+        }
+
+        // Carrega o primeiro aplicativo por padrão ao iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstButton = document.getElementById('btn-diluicao');
+            loadApp('diluicao_29.0_index.html.html', firstButton);
+        });
+    </script>
+
 </body>
 </html>
